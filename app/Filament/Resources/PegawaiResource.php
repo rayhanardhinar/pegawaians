@@ -10,9 +10,11 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\BadgeColumn;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
@@ -70,13 +72,37 @@ class PegawaiResource extends Resource
                 TextColumn::make('phone'),
                 TextColumn::make('address'),
                 TextColumn::make('department.name'),
-                TextColumn::make('position'),
-                TextColumn::make('status'),
+                TextColumn::make('position')
+                    ->label('Posisi')
+                    ->formatStateUsing(fn (string $state) => ucfirst($state)),
+                BadgeColumn::make('status')
+                ->label('Status')
+                ->formatStateUsing(fn (string $state) => match ($state) {
+                    'active' => 'Aktif',
+                    'deactive' => 'Tidak Aktif',
+                    'probation' => 'Percobaan',
+                    default => ucfirst($state),
+                })
+                ->colors([
+                    'success' => 'active',
+                    'danger' => 'deactive',
+                    'warning' => 'probation',
+                ])
+                ->icons([
+                    'heroicon-o-check-circle' => 'active',
+                    'heroicon-o-x-circle' => 'deactive',
+                    'heroicon-o-clock' => 'probation',
+                ]),
             ])
             ->filters([
                 //
             ])
+            ->headerActions([
+                ExportAction::make()
+            ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
+                Tables\Actions\DeleteAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

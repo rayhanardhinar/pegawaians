@@ -16,4 +16,9 @@ class ListDepartments extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    public function getTitle(): string
+    {
+        return 'Daftar Departemen';
+    }
 }

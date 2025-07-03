@@ -16,4 +16,9 @@ class ListPegawais extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    public function getTitle(): string
+    {
+        return 'Daftar Pegawai'; // Ini akan mengganti header utama
+    }
 }
